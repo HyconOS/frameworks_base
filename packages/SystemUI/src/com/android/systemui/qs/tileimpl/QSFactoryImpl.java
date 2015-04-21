@@ -39,6 +39,7 @@ import com.android.systemui.qs.tiles.DataSwitchTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.GamingModeTile;
+import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.NfcTile;
@@ -90,7 +91,8 @@ public class QSFactoryImpl implements QSFactory {
      private final Provider<CaffeineTile> mCaffeineTileProvider;
      private final Provider<DataSwitchTile> mDataSwitchTileProvider;
      private final Provider<SyncTile> mSyncTileProvider;
-     private final Provider<GamingModeTile> mGamingModeTileProvider
+     private final Provider<GamingModeTile> mGamingModeTileProvider;
+     private final Provider<HeadsUpTile> mHeadsUpTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
 
@@ -119,8 +121,9 @@ public class QSFactoryImpl implements QSFactory {
             Provider<PowerShareTile> powerShareTileProvider,
             Provider<CaffeineTile> caffeineTileProvider,
             Provider<DataSwitchTile> dataSwitchTileProvider,
-            Provider<SyncTile> syncTileProvider) {
-            Provider<GamingModeTile> gamingModeTileProvider) {
+            Provider<SyncTile> syncTileProvider,
+            Provider<GamingModeTile> gamingModeTileProvider,
+            Provider<HeadsUpTile> headsUpTileProvider) {
         mQsHostLazy = qsHostLazy;
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
@@ -149,6 +152,7 @@ public class QSFactoryImpl implements QSFactory {
         mDataSwitchTileProvider = dataSwitchTileProvider;
         mSyncTileProvider = syncTileProvider;
         mGamingModeTileProvider = gamingModeTileProvider;
+        mHeadsUpTileProvider = headsUpTileProvider;
     }
 
     public QSTile createTile(String tileSpec) {
@@ -209,8 +213,10 @@ public class QSFactoryImpl implements QSFactory {
                 return mDataSwitchTileProvider.get();
             case "sync":
                 return mSyncTileProvider.get();
-           case "gaming":
+            case "gaming":
                 return mGamingModeTileProvider.get();
+            case "heads_up":
+                return mHeadsUpTileProvider.get();
         }
 
         // Custom tiles

@@ -67,6 +67,7 @@
 
     <!-- Statusbar Tuner -->
     <string name="statusbar_items_title">Statusbar Icons</string>
+    <string name="status_bar_ims">VoLTE/VoWiFi</string>
 
     <!-- AOD QS tile -->
     <string name="quick_settings_aod_label">AOD</string>

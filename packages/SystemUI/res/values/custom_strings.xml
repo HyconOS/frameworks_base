@@ -50,6 +50,9 @@
     <!-- QS Header data usage info -->
     <string name="usage_data">used</string>
 
+    <!-- Statusbar Tuner -->
+    <string name="statusbar_items_title">Statusbar Icons</string>
+
     <!-- AOD QS tile -->
     <string name="quick_settings_aod_label">AOD</string>
 

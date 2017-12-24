@@ -95,4 +95,11 @@
      <!-- Notify use that they are in Lock-to-app (for devices without navbar and with gestures on fingerprint sensor)-->
     <string name="screen_pinning_toast_no_navbar_fpsensor">To unpin this screen, touch &amp; hold fingerprint sensor</string>
 
+    <!-- CPUInfo tile -->
+    <string name="quick_settings_cpuinfo_label">CPU Info</string>
+    <string name="accessibility_quick_settings_cpuinfo_off">CPU Info off</string>
+    <string name="accessibility_quick_settings_cpuinfo_on">CPU Info on</string>
+    <string name="accessibility_quick_settings_cpuinfo_changed_off">CPU Info turned off</string>
+    <string name="accessibility_quick_settings_cpuinfo_changed_on">CPU Info turned on</string>
+
 </resources>

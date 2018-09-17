@@ -246,5 +246,7 @@ public class SystemSettingsValidators {
                         return true;
                     }
                 });
+        VALIDATORS.put(System.NAVIGATION_BAR_SHOW, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.NAVIGATION_BAR_MODE_OVERLAY, ANY_STRING_VALIDATOR);
     }
 }

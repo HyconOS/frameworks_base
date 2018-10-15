@@ -26,6 +26,7 @@ import android.hardware.SensorManager;
 import android.widget.ImageView;
 
 import android.service.quicksettings.Tile;
+import com.android.internal.util.custom.CustomUtils;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 
 import com.android.systemui.R;
@@ -79,6 +80,11 @@ public class CompassTile extends QSTileImpl<BooleanState> implements SensorEvent
         QSIconView iconView = super.createTileView(context);
         mImage = (ImageView) iconView.findViewById(android.R.id.icon);
         return iconView;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return CustomUtils.deviceHasCompass(mContext);
     }
 
     @Override

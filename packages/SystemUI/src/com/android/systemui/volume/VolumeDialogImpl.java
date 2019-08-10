@@ -172,6 +172,9 @@ public class VolumeDialogImpl implements VolumeDialog,
     // Volume panel placement left or right
     private boolean mVolumePanelOnLeft;
 
+    // Hide the ringer button or not
+    private boolean mHideRingerButton;
+
     public VolumeDialogImpl(Context context) {
         mContext =
                 new ContextThemeWrapper(context, R.style.qs_theme);
@@ -185,6 +188,7 @@ public class VolumeDialogImpl implements VolumeDialog,
                 Prefs.getBoolean(context, Prefs.Key.HAS_SEEN_ODI_CAPTIONS_TOOLTIP, false);
         if (!mShowActiveStreamOnly) {
             mVolumePanelOnLeft = mContext.getResources().getBoolean(R.bool.config_audioPanelOnLeftSide);
+            mHideRingerButton = mContext.getResources().getBoolean(R.bool.config_hideRingerButton);
         }
     }
 
@@ -310,7 +314,9 @@ public class VolumeDialogImpl implements VolumeDialog,
                 if(isLandscape()){
                     setLayoutGravity(mODICaptionsView.getLayoutParams(), panelGravity);
                     MarginLayoutParams captionsLayoutParams = (MarginLayoutParams) mODICaptionsView.getLayoutParams();
-                    if(mVolumePanelOnLeft){
+                    if (mHideRingerButton){
+                        captionsLayoutParams.setMargins(0, 0, 0, 0);
+                    }else if(mVolumePanelOnLeft){
                         captionsLayoutParams.setMargins(land_margin, 0, 0, 0);
                     }
                     mODICaptionsView.setLayoutParams(captionsLayoutParams);
@@ -337,6 +343,10 @@ public class VolumeDialogImpl implements VolumeDialog,
         mSettingsView = mDialog.findViewById(R.id.settings_container);
         mSettingsIcon = mDialog.findViewById(R.id.settings);
         mSettingsIcon.setOnLongClickListener(this);
+
+        if (mHideRingerButton) {
+            mRinger.setVisibility(View.GONE);
+        }
 
         if (mRows.isEmpty()) {
             if (!AudioSystem.isSingleVolume(mContext)) {

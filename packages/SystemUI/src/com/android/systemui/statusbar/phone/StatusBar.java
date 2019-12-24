@@ -498,7 +498,8 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private final DisplayMetrics mDisplayMetrics;
 
-    private boolean mHeadsUpDisabled, mGamingModeActivated;
+    private boolean mGamingModeActivated;
+    private int mHeadsUpDisabled;
 
     // XXX: gesture research
     private final GestureRecorder mGestureRec = DEBUG_GESTURES
@@ -2254,9 +2255,9 @@ public class StatusBar extends SystemUI implements DemoMode,
                 UserHandle.USER_CURRENT) == 1;
         mHeadsUpDisabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.GAMING_MODE_HEADSUP_TOGGLE, 1,
-                UserHandle.USER_CURRENT) == 1;
+                UserHandle.USER_CURRENT);
         if (mNotificationInterruptStateProvider != null)
-            mNotificationInterruptStateProvider.setGamingPeekMode(mGamingModeActivated && mHeadsUpDisabled);
+            mNotificationInterruptStateProvider.setGamingPeekMode(mGamingModeActivated, mHeadsUpDisabled);
     }
 
     private void setUseLessBoringHeadsUp() {
@@ -4389,6 +4390,8 @@ public class StatusBar extends SystemUI implements DemoMode,
                 Settings.System.USE_OLD_MOBILETYPE, 0,
                 UserHandle.USER_CURRENT) != 0;
         TelephonyIcons.updateIcons(USE_OLD_MOBILETYPE);
+    }
+    
     private void setHeadsUpStoplist() {
         if (mNotificationInterruptStateProvider != null)
             mNotificationInterruptStateProvider.setHeadsUpStoplist();

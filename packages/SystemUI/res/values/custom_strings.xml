@@ -75,4 +75,7 @@
     <string name="accessibility_quick_settings_ambient_display_changed_off">Ambient display turned off</string>
     <string name="accessibility_quick_settings_ambient_display_changed_on">Ambient display turned on</string>
 
+    <!-- Spidey Analog clock -->
+    <string name="clock_title_spidey" translatable="false">Spidey</string>
+
 </resources>

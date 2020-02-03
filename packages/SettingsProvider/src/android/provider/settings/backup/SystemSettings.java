@@ -90,5 +90,6 @@ public class SystemSettings {
         Settings.System.VOLUME_ROCKER_WAKE,
         Settings.System.VOLUME_BUTTON_MUSIC_CONTROL,
         Settings.System.USE_OLD_MOBILETYPE,
+        Settings.System.RINGTONE_VIBRATION_PATTERN,
     };
 }

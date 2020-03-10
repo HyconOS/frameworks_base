@@ -13935,6 +13935,11 @@ public final class Settings {
         public static final String BATTERY_LIGHT_ENABLED = "battery_light_enabled";
 
         /**
+         * @hide
+         */
+        public static final String SHOW_FPS_OVERLAY = "show_fps_overlay";
+
+        /**
          * Google Hybrid Battery Warnings
          * @hide
          */

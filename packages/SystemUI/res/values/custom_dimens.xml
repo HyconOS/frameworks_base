@@ -96,4 +96,7 @@
     <dimen name="right_tri_state_up_top_left_radius">24.0dip</dimen>
     <dimen name="right_tri_state_up_top_right_radius">24.0dip</dimen>
 
+    <!-- App Lock -->
+    <dimen name="applock_icon_dimension">54dp</dimen>
+
 </resources>

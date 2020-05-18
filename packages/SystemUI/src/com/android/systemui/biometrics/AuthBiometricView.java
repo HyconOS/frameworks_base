@@ -49,6 +49,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.systemui.statusbar.phone.StatusBar;
+import com.android.systemui.Dependency;
 import com.android.systemui.R;
 
 import java.lang.annotation.Retention;
@@ -205,6 +207,7 @@ public abstract class AuthBiometricView extends LinearLayout {
     protected Bundle mSavedState;
 
     protected final PackageManager mPackageManager;
+
     protected boolean mHasFod;
 
     /**
@@ -277,6 +280,10 @@ public abstract class AuthBiometricView extends LinearLayout {
         mHasFod = FodUtils.hasFodSupport(context);
 
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
+
+        PackageManager packageManager = context.getPackageManager();
+        mHasFod = packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT) &&
+                FodUtils.hasFodSupport(context);
 
         mResetErrorRunnable = () -> {
             updateState(getStateForAfterError());
@@ -820,9 +827,22 @@ public abstract class AuthBiometricView extends LinearLayout {
             final View child = getChildAt(i);
 
             if (child.getId() == R.id.biometric_icon) {
-                child.measure(
-                        MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.AT_MOST),
-                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+                if (this instanceof AuthBiometricFingerprintView && mHasFod) {
+                    final int buttonBarHeight =
+                            findViewById(R.id.button_bar).getLayoutParams().height;
+                    // The view is invisible, so it still takes space and
+                    // we use that to adjust for the FOD icon
+                    final int fodHeight = Dependency.get(StatusBar.class).getFodHeight(true) -
+                            buttonBarHeight - findViewById(R.id.button_bar).getPaddingTop();
+
+                    child.measure(
+                            MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.AT_MOST),
+                            MeasureSpec.makeMeasureSpec(fodHeight, MeasureSpec.EXACTLY));
+                } else {
+                    child.measure(
+                            MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.AT_MOST),
+                            MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+                }
             } else if (child.getId() == R.id.button_bar) {
                 child.measure(
                         MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY),

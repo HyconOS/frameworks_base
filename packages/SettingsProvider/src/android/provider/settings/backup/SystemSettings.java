@@ -105,5 +105,6 @@ public class SystemSettings {
         Settings.System.GAMING_MODE_MEDIA,
         Settings.System.LOCKSCREEN_MEDIA_ART,
         Settings.System.NOTIFICATION_HEADERS,
+        Settings.System.QS_PANEL_BG_USE_NEW_TINT,
     };
 }

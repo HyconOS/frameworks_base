@@ -5588,6 +5588,12 @@ public final class Settings {
         public static final String STATUSBAR_ICONS_STYLE = "statusbar_icons_style";
 
         /**
+         * Screen off fod
+         * @hide
+         */
+        public static final String FOD_GESTURE = "fod_gesture";
+
+        /**
          * Wether auto brightness is applied one shot when screen is turned on
          * @hide
          */
@@ -5759,6 +5765,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_TILES_BG_DISCO);
             PRIVATE_SETTINGS.add(HEADER_ICONS_STYLE);
             PRIVATE_SETTINGS.add(STATUSBAR_ICONS_STYLE);
+            PRIVATE_SETTINGS.add(FOD_GESTURE);
         }
 
         /**

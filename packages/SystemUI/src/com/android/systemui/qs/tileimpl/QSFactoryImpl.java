@@ -39,6 +39,7 @@ import com.android.systemui.qs.tiles.CPUInfoTile;
 import com.android.systemui.qs.tiles.ColorInversionTile;
 import com.android.systemui.qs.tiles.DataSaverTile;
 import com.android.systemui.qs.tiles.DataSwitchTile;
+import com.android.systemui.qs.tiles.DcDimmingTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.FPSInfoTile;
@@ -99,6 +100,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<AODTile> mAODTileProvider;
     private final Provider<AmbientDisplayTile> mAmbientDisplayTileProvider;
     private final Provider<CPUInfoTile> mCPUInfoTileProvider;
+    private final Provider<DcDimmingTile> mDcDimmingTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
 
@@ -123,6 +125,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<NfcTile> nfcTileProvider,
             Provider<GarbageMonitor.MemoryTile> memoryTileProvider,
             Provider<UiModeNightTile> uiModeNightTileProvider,
+            Provider<DcDimmingTile> dcDimTileProvider,
             Provider<ScreenRecordTile> screenRecordTileProvider,
             Provider<PowerShareTile> powerShareTileProvider,
             Provider<CaffeineTile> caffeineTileProvider,
@@ -165,6 +168,7 @@ public class QSFactoryImpl implements QSFactory {
         mAmbientDisplayTileProvider = ambientDisplayTileProvider;
         mCPUInfoTileProvider = cpuInfoTileProvider;
         mFPSInfoTileProvider = fpsInfoTileProvider;
+        mDcDimmingTileProvider = dcDimTileProvider;
     }
 
     public QSTile createTile(String tileSpec) {
@@ -235,6 +239,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mCPUInfoTileProvider.get();
             case "fpsinfo":
                 return mFPSInfoTileProvider.get();
+            case "dc_dimming":
+                return mDcDimmingTileProvider.get();
         }
 
         // Custom tiles

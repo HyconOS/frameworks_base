@@ -5108,10 +5108,16 @@ public final class Settings {
         public static final String DOUBLE_TAP_SLEEP_LOCKSCREEN = "double_tap_sleep_lockscreen";
 
         /**
+
          * Three Finger Gesture from Oppo
          * @hide
          */
         public static final String THREE_FINGER_GESTURE = "three_finger_gesture";
+
+         * Clipboard access info
+         * @hide
+         */
+        public static final String CLIPBOARD_TOAST_INFO = "clipboard_toast_info";
 
         /**
          * Volume rocker wake
@@ -5630,12 +5636,6 @@ public final class Settings {
          * @hide
          */
         public static final String PERMISSIONS_HUB_ENABLED = "permissions_hub_enabled";
-
-        /**
-         * Toggle for clipboard access toast.
-         * @hide
-         */
-        public static final String SHOW_CLIPBOARD_TOAST = "show_clipboard_toast";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to

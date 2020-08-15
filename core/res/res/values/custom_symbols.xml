@@ -145,4 +145,9 @@
 
     <!-- Whether device supports in-display fingerprint when screen is turned off -->
     <java-symbol type="bool" name="config_supportsScreenOffInDisplayFingerprint" />
+
+    <!-- Clipboard access toast -->
+    <java-symbol type="string" name="app_clipboard_access_denied" />
+    <java-symbol type="string" name="app_clipboard_access_granted" />
+
 </resources>

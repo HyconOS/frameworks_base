@@ -96,5 +96,12 @@ public class SystemSettings {
         Settings.System.VIBRATE_ON_DISCONNECT,
         Settings.System.CUSTOM_RINGTONE_VIBRATION_PATTERN,
         Settings.System.QS_MEDIA_PLAYER,
+        Settings.System.GAMING_MODE_HEADS_UP,
+        Settings.System.GAMING_MODE_ZEN,
+        Settings.System.GAMING_MODE_NAVBAR,
+        Settings.System.GAMING_MODE_HW_BUTTONS,
+        Settings.System.GAMING_MODE_BRIGHTNESS_ENABLED,
+        Settings.System.GAMING_MODE_MEDIA_ENABLED,
+        Settings.System.GAMING_MODE_MEDIA,
     };
 }

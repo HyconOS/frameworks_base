@@ -14,4 +14,7 @@
         <item name="preferenceTheme">@style/TunerPreferenceTheme</item>
     </style>
 
+    <!-- Change clockface -->
+    <string name="change_clock_face">Swipe to change the clock face</string>
+
 </resources>

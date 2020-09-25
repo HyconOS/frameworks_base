@@ -236,5 +236,6 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.GAMING_MODE_BRIGHTNESS_ENABLED, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.GAMING_MODE_MEDIA_ENABLED, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.GAMING_MODE_MEDIA, new InclusiveIntegerRangeValidator(0, 100));
+        VALIDATORS.put(System.LOCKSCREEN_MEDIA_ART, BOOLEAN_VALIDATOR);
     }
 }

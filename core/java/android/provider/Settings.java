@@ -4846,6 +4846,11 @@ public final class Settings {
         /**
          * @hide
          */
+        public static final String LOCKSCREEN_MEDIA_ART = "lockscreen_media_art";
+
+        /**
+         * @hide
+         */
         public static final String SMART_CHARGING = "smart_charging";
 
         /**
@@ -5190,6 +5195,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(VIBRATE_ON_CONNECT);
             PRIVATE_SETTINGS.add(VIBRATE_ON_CALLWAITING);
             PRIVATE_SETTINGS.add(VIBRATE_ON_DISCONNECT);
+            PRIVATE_SETTINGS.add(LOCKSCREEN_MEDIA_ART);
         }
 
         /**

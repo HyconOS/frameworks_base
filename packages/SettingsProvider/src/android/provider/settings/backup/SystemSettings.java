@@ -104,5 +104,6 @@ public class SystemSettings {
         Settings.System.GAMING_MODE_MEDIA_ENABLED,
         Settings.System.GAMING_MODE_MEDIA,
         Settings.System.LOCKSCREEN_MEDIA_ART,
+        Settings.System.NOTIFICATION_HEADERS,
     };
 }

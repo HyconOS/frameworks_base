@@ -5017,6 +5017,12 @@ public final class Settings {
         public static final String LOCKSCREEN_STATUS_BAR = "lockscreen_status_bar";
 
         /**
+         * Controls whether to show notification headers
+         * @hide
+         */
+        public static final String NOTIFICATION_HEADERS = "notification_headers";
+
+        /**
          * Whether gaming mode sets {@link Global.HEADS_UP_NOTIFICATIONS_ENABLED}
          * @hide
          */

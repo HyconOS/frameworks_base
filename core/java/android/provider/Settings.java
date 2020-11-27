@@ -5433,6 +5433,12 @@ public final class Settings {
          * @hide
          */
         public static final String ALERT_SLIDER_NOTIFICATIONS = "alert_slider_notifications";
+        
+        /**
+         * FOD icon picker
+         * @hide
+         */
+        public static final String FOD_ICON = "fod_icon";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to

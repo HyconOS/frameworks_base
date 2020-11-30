@@ -224,4 +224,7 @@
          to enable/disable DC dimming. -->
     <string name="config_deviceDcDimmingSysfsNode"></string>
 
+    <!-- Default fod pressed color -->
+    <integer name="config_fod_pressed_color">1</integer>
+
 </resources>

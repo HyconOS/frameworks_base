@@ -5242,6 +5242,11 @@ public final class Settings {
         /**
          * @hide
          */
+        public static final String QS_TILE_STYLE = "qs_tile_style";
+
+        /**
+         * @hide
+         */
         public static final String OMNI_QS_LAYOUT_ROWS = "qs_layout_rows";
 
         /**
@@ -5404,6 +5409,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(CAMERA_LAUNCH);
             PRIVATE_SETTINGS.add(TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK);
             PRIVATE_SETTINGS.add(HIGH_TOUCH_SENSITIVITY_ENABLE);
+            PRIVATE_SETTINGS.add(QS_TILE_STYLE);
         }
 
         /**

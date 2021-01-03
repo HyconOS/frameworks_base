@@ -4768,6 +4768,24 @@ public class StatusBar extends SystemUI implements DemoMode,
         } else if (STATUS_BAR_BRIGHTNESS_CONTROL.equals(key)) {
             mBrightnessControl = TunerService.parseIntegerSwitch(newValue, false);
         }
+
+        if (NAVIGATION_BAR_SHOW.equals(key) && mDisplayId == Display.DEFAULT_DISPLAY &&
+                mWindowManagerService != null) {
+            boolean navbarEnabled = NavbarUtils.isEnabled(mContext);
+            boolean hasNavbar = getNavigationBarView() != null;
+            if (navbarEnabled) {
+                if (!hasNavbar) {
+                    mNavigationBarController.onDisplayReady(mDisplayId);
+                    setNavBarInteractionMode(getOldNavBarModeOverlay());
+                }
+            } else {
+                saveNavBarCurrentModeOverlay();
+                setNavBarInteractionMode(NAV_BAR_MODE_3BUTTON_OVERLAY);
+                if (hasNavbar) {
+                    mNavigationBarController.onDisplayRemoved(mDisplayId);
+                }
+            }
+        }
     }
 
     private void setNavBarInteractionMode(String overlayPackage) {
@@ -4792,26 +4810,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         return navigationBarModeOverlay;
     }
 
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        if (NAVIGATION_BAR_SHOW.equals(key) && mDisplayId == Display.DEFAULT_DISPLAY &&
-                mWindowManagerService != null) {
-            boolean navbarEnabled = NavbarUtils.isEnabled(mContext);
-            boolean hasNavbar = getNavigationBarView() != null;
-            if (navbarEnabled) {
-                if (!hasNavbar) {
-                    mNavigationBarController.onDisplayReady(mDisplayId);
-                    setNavBarInteractionMode(getOldNavBarModeOverlay());
-                }
-            } else {
-                saveNavBarCurrentModeOverlay();
-                setNavBarInteractionMode(NAV_BAR_MODE_3BUTTON_OVERLAY);
-                if (hasNavbar) {
-                    mNavigationBarController.onDisplayRemoved(mDisplayId);
-                }
-            }
-        }
-    }
     // End Extra BaseStatusBarMethods.
 
     public NotificationGutsManager getGutsManager() {

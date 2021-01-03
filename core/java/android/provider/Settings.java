@@ -4953,12 +4953,6 @@ public final class Settings {
         public static final String CAMERA_LAUNCH = "camera_launch";
 
         /**
-         * Whether or not to vibrate when a touchscreen gesture is detected
-         * @hide
-         */
-        public static final String TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK = "touchscreen_gesture_haptic_feedback";
-
-        /**
          * Whether the HighTouchSensitivity is activated or not.
          * 0 = off, 1 = on
          */
@@ -9565,6 +9559,12 @@ public final class Settings {
          * @hide
          */
         public static final String FEATURE_TOUCH_HOVERING = "feature_touch_hovering";
+
+        /**
+         * Whether key swap is enabled on supported hardware
+         * @hide
+         */
+        public static final String SWAP_CAPACITIVE_KEYS = "swap_capacitive_keys";
 
         /**
          * These entries are considered common between the personal and the managed profile,

@@ -55,7 +55,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.TextClock;
 
+import android.database.ContentObserver;
+import android.content.ContentResolver;
+import android.os.UserHandle;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.Lifecycle;
@@ -178,8 +182,35 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     private PrivacyItemController mPrivacyItemController;
     private final UiEventLogger mUiEventLogger;
+
+    private TextClock mTextClock;
+    private LinearLayout mQsClockOos;
+    private LinearLayout mQsClockNormal;
+
+
     // Used for RingerModeTracker
     private final LifecycleRegistry mLifecycle = new LifecycleRegistry(this);
+
+
+    private class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = getContext().getContentResolver();
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.OOS_QSCLOCK), false,
+                    this, UserHandle.USER_ALL);
+            }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
+    private SettingsObserver mSettingsObserver = new SettingsObserver(mHandler);
 
     private boolean mHasTopCutout = false;
     private int mStatusBarPaddingTop = 0;
@@ -241,6 +272,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mCommandQueue = commandQueue;
         mRingerModeTracker = ringerModeTracker;
         mUiEventLogger = uiEventLogger;
+        mSettingsObserver.observe();
     }
 
     @Override
@@ -274,6 +306,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mPrivacyChip = findViewById(R.id.privacy_chip);
         mPrivacyChip.setOnClickListener(this::onClick);
         mCarrierGroup = findViewById(R.id.carrier_group);
+ 	mQsClockOos = findViewById(R.id.oos_qsclock);
+        mQsClockNormal = findViewById(R.id.normal_qsclock);
+ 	mTextClock = findViewById(R.id.textClock);
+
 
         Rect tintArea = new Rect(0, 0, 0, 0);
         int colorForeground = Utils.getColorAttrDefaultColor(getContext(),
@@ -453,6 +489,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     }
 
     private void updateResources() {
+        boolean oos_qsclock = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.OOS_QSCLOCK, 1, UserHandle.USER_CURRENT) == 1;
+
         Resources resources = mContext.getResources();
         updateMinimumHeight();
 
@@ -461,8 +500,12 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mStatusBarPaddingTop = resources.getDimensionPixelSize(R.dimen.status_bar_padding_top);
 
         // Update height for a few views, especially due to landscape mode restricting space.
+        if (oos_qsclock) {
         mHeaderTextContainerView.getLayoutParams().height =
                 resources.getDimensionPixelSize(R.dimen.qs_header_tooltip_height);
+        } else {
+        mHeaderTextContainerView.getLayoutParams().height = resources.getDimensionPixelSize(R.dimen.qs_header_tooltip_height_normal);
+        }
         mHeaderTextContainerView.setLayoutParams(mHeaderTextContainerView.getLayoutParams());
 
         int topMargin = resources.getDimensionPixelSize(
@@ -494,11 +537,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mClockView.useWallpaperTextColor(shouldUseWallpaperTextColor);
     }
     
-    public void updateSettings() {
-        updateDataUsageView();
-        updateDataUsageImage();
-    }
-
     private void updateDataUsageView() {
         if (mDataUsageView.isDataUsageEnabled() != 0) {
             if (com.android.internal.util.custom.CustomUtils.isConnected(mContext)) {
@@ -530,6 +568,35 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             mDataUsageImage.setVisibility(View.VISIBLE);
         }
     }
+
+    public void updateSettings() {
+	updateQsClock();
+        updateResources();
+        if (mQsPanel != null) {
+        mQsPanel.updatePadding();
+        updateDataUsageView();
+        updateDataUsageImage();
+      }
+    }
+
+    private void updateQsClock() {
+        boolean oos_qsclock = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.OOS_QSCLOCK, 1, UserHandle.USER_CURRENT) == 1;
+        Resources resources = mContext.getResources();
+        if (oos_qsclock) {
+        mHeaderTextContainerView.getLayoutParams().height =
+                resources.getDimensionPixelSize(R.dimen.qs_header_tooltip_height);
+        mHeaderTextContainerView.setLayoutParams(mHeaderTextContainerView.getLayoutParams());
+           mQsClockNormal.setVisibility(View.INVISIBLE);
+	   mQsClockOos.setVisibility(View.VISIBLE);
+        } else {
+        mHeaderTextContainerView.getLayoutParams().height =
+                resources.getDimensionPixelSize(R.dimen.qs_header_tooltip_height_normal);
+        mHeaderTextContainerView.setLayoutParams(mHeaderTextContainerView.getLayoutParams());
+           mQsClockNormal.setVisibility(View.VISIBLE);
+           mQsClockOos.setVisibility(View.GONE);
+       }
+    }    
 
     private void updateStatusIconAlphaAnimator() {
         mStatusIconsAlphaAnimator = new TouchAnimator.Builder()
@@ -730,7 +797,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     @Override
     public void onClick(View v) {
-        if (v == mClockView || v == mNextAlarmTextView) {
+        if (v == mClockView || v == mNextAlarmTextView || v == mTextClock) {
             mActivityStarter.postStartActivityDismissingKeyguard(new Intent(
                     AlarmClock.ACTION_SHOW_ALARMS), 0);
         } else if (v == mNextAlarmContainer && mNextAlarmContainer.isVisibleToUser()) {

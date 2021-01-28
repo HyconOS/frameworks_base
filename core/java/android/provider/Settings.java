@@ -3814,6 +3814,13 @@ public final class Settings {
         public static final int WIFI_SLEEP_POLICY_DEFAULT = Global.WIFI_SLEEP_POLICY_DEFAULT;
 
         /**
+         * Whether to enable gaming mode or not
+         *
+         * @hide
+         */
+        public static final String ENABLE_GAMING_MODE = "enable_gaming_mode";
+
+        /**
          * @deprecated Use {@link android.provider.Settings.Global#WIFI_SLEEP_POLICY_NEVER_WHILE_PLUGGED} instead
          */
         @Deprecated
@@ -5071,48 +5078,6 @@ public final class Settings {
          * @hide
          */
         public static final String NOTIFICATION_HEADERS = "notification_headers";
-
-        /**
-         * Whether gaming mode sets {@link Global.HEADS_UP_NOTIFICATIONS_ENABLED}
-         * @hide
-         */
-        public static final String GAMING_MODE_HEADS_UP = "gaming_mode_heads_up";
-
-        /**
-         * Whether gaming mode sets DND {@link Global.ZEN_MODE}
-         * @hide
-         */
-        public static final String GAMING_MODE_ZEN = "gaming_mode_zen";
-
-        /**
-         * Whether gaming mode sets {@link FORCE_SHOW_NAVBAR}
-         * @hide
-         */
-        public static final String GAMING_MODE_NAVBAR = "gaming_mode_navbar";
-
-        /**
-         * Whether gaming sets {@link HARDWARE_KEYS_DISABLE}
-         * @hide
-         */
-        public static final String GAMING_MODE_HW_BUTTONS = "gaming_mode_hw_buttons";
-
-        /**
-         * Whether gaming mode toggles auto brightness
-         * @hide
-         */
-        public static final String GAMING_MODE_BRIGHTNESS_ENABLED = "gaming_mode_brightness_enabled";
-
-        /**
-         * Whether gaming mode sets media volume
-         * @hide
-         */
-        public static final String GAMING_MODE_MEDIA_ENABLED = "gaming_mode_media_enabled";
-
-        /**
-         * Gaming mode media volume level in percentage
-         * @hide
-         */
-        public static final String GAMING_MODE_MEDIA = "gaming_mode_media";
 
 	/**
          * Show data usage in QS header

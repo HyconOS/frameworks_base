@@ -34,6 +34,7 @@ import android.graphics.Rect;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.os.Looper;
 import android.provider.AlarmClock;
 import android.provider.CalendarContract;
@@ -115,6 +116,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private static final int TOOLTIP_NOT_YET_SHOWN_COUNT = 0;
     public static final int MAX_TOOLTIP_SHOWN_COUNT = 2;
 
+    private final Handler mHandler = new Handler();
     private final NextAlarmController mAlarmController;
     private final ZenModeController mZenController;
     private final StatusBarIconController mStatusBarIconController;
@@ -177,6 +179,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         }
 
         void observe() {
+            ContentResolver resolver = getContext().getContentResolver();
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.QS_DATAUSAGE), false,
                     this, UserHandle.USER_ALL);
@@ -504,7 +507,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     }
 
     private void updateDataUsageView() {
-        if (mDataUsageView.isDataUsageEnabled()!= 0)
+        if (mDataUsageView.isDataUsageEnabled()!= 0) {
             mDataUsageLayout.setVisibility(View.VISIBLE);
             mDataUsageImage.setVisibility(View.VISIBLE);
             mDataUsageView.setVisibility(View.VISIBLE);

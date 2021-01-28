@@ -44,6 +44,7 @@ import android.hardware.biometrics.BiometricSourceType;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.MathUtils;
 import android.view.GestureDetector;

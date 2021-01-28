@@ -39,6 +39,7 @@ import android.net.NetworkInfo;
 import android.net.ConnectivityManager;
 import android.os.SystemProperties;
 import android.text.format.Time;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.IWindowManager;
 import android.view.WindowManagerGlobal;

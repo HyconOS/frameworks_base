@@ -310,7 +310,7 @@ public class DataUsageController {
     public DataUsageInfo getDailyDataUsageInfo(NetworkTemplate template) {
         final NetworkPolicy policy = findNetworkPolicy(template);
         final long end = System.currentTimeMillis();
-        long start = end - Utils.getTodayMillis();
+        long start = end - CustomUtils.getTodayMillis();
 
         final long totalBytes = getUsageLevel(template, start, end);
         if (totalBytes < 0L) {

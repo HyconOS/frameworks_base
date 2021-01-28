@@ -169,6 +169,7 @@ import android.util.PrintWriterPrinter;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.proto.ProtoOutputStream;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.IDisplayFoldListener;
@@ -1142,7 +1143,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mHandler.removeMessages(MSG_POWER_LONG_PRESS);
             // See if we deferred screen wake because long press power for torch is enabled
             if (mResolvedLongPressOnPowerBehavior == LONG_PRESS_POWER_TORCH
-                    && (!isScreenOn() || isDozeMode())) {
+                    && !isScreenOn()) {
                 wakeUpFromPowerKey(SystemClock.uptimeMillis());
             }
         }
@@ -1160,7 +1161,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private void powerPress(long eventTime, boolean interactive, int count) {
-        if (!isDozeMode() && mDefaultDisplayPolicy.isScreenOnEarly() && !mDefaultDisplayPolicy.isScreenOnFully()) {
+        if (mDefaultDisplayPolicy.isScreenOnEarly() && !mDefaultDisplayPolicy.isScreenOnFully()) {
             Slog.i(TAG, "Suppressed redundant power key press while "
                     + "already in the process of turning the screen on.");
             return;
@@ -1208,7 +1209,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     break;
                 }
             }
-        } else if ((mTorchActionMode == 1) && (!isScreenOn() || isDozeMode())) {
+        } else if ((mTorchActionMode == 1) && !isScreenOn()) {
             wakeUpFromPowerKey(eventTime);
         }
     }
@@ -1432,7 +1433,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (FactoryTest.isLongPressOnPowerOffEnabled()) {
             return LONG_PRESS_POWER_SHUT_OFF_NO_CONFIRM;
         }
-        if ((mTorchActionMode == 1) && (!isScreenOn() || isDozeMode() || mTorchEnabled)) {
+        if ((mTorchActionMode == 1) && (!isScreenOn() || mTorchEnabled)) {
             return LONG_PRESS_POWER_TORCH;
         }
         return mLongPressOnPowerBehavior;

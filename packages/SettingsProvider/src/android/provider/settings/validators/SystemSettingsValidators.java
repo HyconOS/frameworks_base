@@ -16,6 +16,7 @@
 
 package android.provider.settings.validators;
 
+import static android.provider.settings.validators.SettingsValidators.ANY_INTEGER_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.BOOLEAN_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.COMPONENT_NAME_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.DATE_FORMAT_VALIDATOR;
@@ -232,6 +233,7 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.LOCKSCREEN_MEDIA_ART, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.NOTIFICATION_HEADERS, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.QS_PANEL_BG_USE_NEW_TINT, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.ACCENT_COLOR, ANY_INTEGER_VALIDATOR);
         VALIDATORS.put(
                 System.COLOR_BUCKET_OVERLAY,
                 new Validator() {

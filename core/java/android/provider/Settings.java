@@ -5080,10 +5080,16 @@ public final class Settings {
 
         /**
          * Setting to hold the current set overlay for color bucket.
-         *    overlay package name (String)
+         * overlay package name (String)
          * @hide
          */
         public static final String COLOR_BUCKET_OVERLAY = "color_bucket_overlay";
+
+        /**
+         * Accent Color
+         * @hide
+         */
+        public static final String ACCENT_COLOR = "accent_color";
 
         /**
          * Number of qs columns on landscape orientation
@@ -5245,6 +5251,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_COLUMNS);
             PRIVATE_SETTINGS.add(OMNI_QS_TILE_TITLE_VISIBILITY);
             PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_ROWS);
+            PRIVATE_SETTINGS.add(ACCENT_COLOR);
         }
 
         /**

@@ -5433,7 +5433,7 @@ public final class Settings {
          * @hide
          */
         public static final String ALERT_SLIDER_NOTIFICATIONS = "alert_slider_notifications";
-        
+
         /**
          * FOD icon picker
          * @hide
@@ -5455,6 +5455,24 @@ public final class Settings {
          * @hide
          */
         public static final String FOD_COLOR = "fod_color";
+
+        /**
+         * Show ambient icons on lockscreen
+         * @hide
+         */
+        public static final String AMBIENT_ICONS_LOCKSCREEN = "ambient_icons_lockscreen";
+
+        /**
+         * Change size of ambient icons on lockscreen
+         * @hide
+         */
+        public static final String AMBIENT_ICONS_SIZE = "ambient_icons_size";
+
+        /**
+         * Change color of ambient icons on lockscreen
+         * @hide
+         */
+        public static final String AMBIENT_ICONS_COLOR = "ambient_icons_color";
 
         /**
          * Screenshot image compression

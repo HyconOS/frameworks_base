@@ -91,6 +91,7 @@ import com.android.systemui.statusbar.policy.DateView;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.util.RingerModeTracker;
+import com.android.systemui.tuner.TunerService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +108,7 @@ import javax.inject.Named;
  */
 public class QuickStatusBarHeader extends RelativeLayout implements
         View.OnClickListener, NextAlarmController.NextAlarmChangeCallback,
-        ZenModeController.Callback, LifecycleOwner {
+        ZenModeController.Callback, LifecycleOwner, TunerService.Tunable {
     private static final String TAG = "QuickStatusBarHeader";
     private static final boolean DEBUG = false;
 
@@ -120,7 +121,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private final Handler mHandler = new Handler();
 
     public static final String STATUS_BAR_CUSTOM_HEADER =
-                                Settings.System.STATUS_BAR_CUSTOM_HEADER;
+            "system:" + Settings.System.STATUS_BAR_CUSTOM_HEADER;
 
     private final NextAlarmController mAlarmController;
     private final ZenModeController mZenController;
@@ -332,7 +333,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         updateResources();
 
         Dependency.get(TunerService.class).addTunable(this,
-                StatusBarIconController.STATUS_BAR_CUSTOM_HEADER);
+                StatusBarIconController.ICON_BLACKLIST,
+                STATUS_BAR_CUSTOM_HEADER);
     }
 
     public QuickQSPanel getHeaderQsPanel() {
@@ -853,7 +855,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         return mMicCameraIndicatorsEnabled || mAllIndicatorsEnabled;
     }
 
-    @Override
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
             case STATUS_BAR_CUSTOM_HEADER:

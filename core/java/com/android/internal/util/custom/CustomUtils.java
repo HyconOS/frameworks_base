@@ -20,6 +20,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.om.IOverlayManager;
+import android.content.om.OverlayInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -35,6 +37,7 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.net.NetworkInfo;
 import android.net.ConnectivityManager;
 import android.os.SystemProperties;
@@ -48,8 +51,10 @@ import com.android.internal.R;
 import com.android.internal.statusbar.IStatusBarService;
 
 import java.util.Locale;
+import java.util.List;
 
 public class CustomUtils {
+    private static OverlayManager mOverlayService;
 
     public static boolean isPackageInstalled(Context context, String pkg, boolean ignoreState) {
         if (pkg != null) {
@@ -129,6 +134,58 @@ public class CustomUtils {
         // Use boolean to determine celsius or fahrenheit
         return String.valueOf((n - c) % 2 == 0 ? (int) temp :
                 ForC ? c + "°C" :c * 9/5 + 32 + "°F");
+    }
+
+    // Method to detect whether an overlay is enabled or not
+    public static boolean isThemeEnabled(String packageName) {
+        mOverlayService = new OverlayManager();
+        try {
+            List<OverlayInfo> infos = mOverlayService.getOverlayInfosForTarget("android",
+                    UserHandle.myUserId());
+            for (int i = 0, size = infos.size(); i < size; i++) {
+                if (infos.get(i).packageName.equals(packageName)) {
+                    return infos.get(i).isEnabled();
+                }
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean isNavbarColor(String packageName) {
+        mOverlayService = new OverlayManager();
+        try {
+            List<OverlayInfo> infos = mOverlayService.getOverlayInfosForTarget("com.android.systemui",
+                    UserHandle.myUserId());
+            for (int i = 0, size = infos.size(); i < size; i++) {
+                if (infos.get(i).packageName.equals(packageName)) {
+                    return infos.get(i).isEnabled();
+                }
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static class OverlayManager {
+        private final IOverlayManager mService;
+
+        public OverlayManager() {
+            mService = IOverlayManager.Stub.asInterface(
+                    ServiceManager.getService(Context.OVERLAY_SERVICE));
+        }
+
+        public void setEnabled(String pkg, boolean enabled, int userId)
+                throws RemoteException {
+            mService.setEnabled(pkg, enabled, userId);
+        }
+
+        public List<OverlayInfo> getOverlayInfosForTarget(String target, int userId)
+                throws RemoteException {
+            return mService.getOverlayInfosForTarget(target, userId);
+        }
     }
 
      // Check to see if device supports the Fingerprint scanner

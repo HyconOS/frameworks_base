@@ -102,4 +102,7 @@
     <!-- Margin on the left side of the heads up notification -->
     <dimen name="heads_up_status_bar_padding_start">0dp</dimen>
 
+    <!-- Quick settimgs Media -->
+    <dimen name="quick_settings_top_margin_media">4dp</dimen>
+    <dimen name="quick_settings_top_margin_media_extra">10dp</dimen>
 </resources>

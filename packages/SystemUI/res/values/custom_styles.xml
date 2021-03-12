@@ -8,4 +8,5 @@
         <item name="android:layout_centerVertical">true</item>
         <item name="android:alpha">@null</item>
     </style>
+
 </resources>

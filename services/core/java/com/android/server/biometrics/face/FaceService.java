@@ -149,8 +149,7 @@ public class FaceService extends BiometricServiceBase {
                     for (byte b : token) {
                         token_AL.add(new Byte(b));
                     }
-                    final boolean authenticated = faceId != 0;
-                    FaceService.super.handleAuthenticated(authenticated, face, token_AL);
+                    FaceService.super.handleAuthenticated(face, token_AL);
                 }
             });
         }

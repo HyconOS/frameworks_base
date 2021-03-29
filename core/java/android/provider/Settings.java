@@ -5318,10 +5318,6 @@ public final class Settings {
         public static final String STATUS_BAR_FILE_HEADER_IMAGE =
                 "status_bar_file_header_image";
 
-        /**
-         * @hide
-         */
-        public static final String OMNI_QS_LAYOUT_ROWS = "qs_layout_rows";
 
         /**
          * Holds current enabled volume panel implementation
@@ -5493,10 +5489,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(LOCKSCREEN_MEDIA_ART);
             PRIVATE_SETTINGS.add(COLOR_BUCKET_OVERLAY);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_NEW_TINT);
-            PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_COLUMNS_LANDSCAPE);
-            PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_COLUMNS);
-            PRIVATE_SETTINGS.add(OMNI_QS_TILE_TITLE_VISIBILITY);
-            PRIVATE_SETTINGS.add(OMNI_QS_LAYOUT_ROWS);
             PRIVATE_SETTINGS.add(ACCENT_COLOR);
             PRIVATE_SETTINGS.add(BUTTON_BACKLIGHT_ONLY_WHEN_PRESSED);
             PRIVATE_SETTINGS.add(NAVIGATION_BAR_SHOW);

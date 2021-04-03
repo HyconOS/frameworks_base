@@ -215,7 +215,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         if (mRegularTileLayout instanceof PagedTileLayout) {
             mQsTileRevealController = new QSTileRevealController(mContext, this,
                     (PagedTileLayout) mRegularTileLayout);
-            updateSettings();
         }
         mQSLogger.logAllTilesChangeListening(mListening, getDumpableTag(), mCachedSpecs);
         updateResources();
@@ -267,6 +266,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         }
         return mRegularTileLayout;
     }
+
 
     protected QSTileLayout createHorizontalTileLayout() {
         return createRegularTileLayout();
@@ -511,6 +511,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         if (mTileLayout != null) {
             mTileLayout.updateResources();
         }
+        if (mCustomizePanel != null) {
+            mCustomizePanel.updateResources();
+        }
     }
 
     protected void updatePadding() {
@@ -595,11 +598,11 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             mTileLayout = newLayout;
             if (mHost != null) setTiles(mHost.getTiles());
             newLayout.setListening(mListening);
-            if (needsDynamicRowsAndColumns()) {
+            /*if (needsDynamicRowsAndColumns()) {
                 newLayout.setMinRows(horizontal ? 2 : 1);
                 // Let's use 3 columns to match the current layout
                 newLayout.setMaxColumns(horizontal ? 3 : TileLayout.NO_MAX_COLUMNS);
-            }
+            }*/
             updateTileLayoutMargins();
             updateFooterMargin();
             updateMediaDisappearParameters();
@@ -630,9 +633,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         return true;
     }
 
-    protected boolean needsDynamicRowsAndColumns() {
-        return true;
-    }
+    /*protected boolean needsDynamicRowsAndColumns() {
+        return false;
+    }*/
 
     private void switchAllContentToParent(ViewGroup parent, QSTileLayout newLayout) {
         int index = parent == this ? mMovableContentStartIndex : 0;
@@ -1230,7 +1233,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         int getOffsetTop(TileRecord tile);
 
         boolean updateResources();
-        void updateSettings();
 
         void setListening(boolean listening);
 
@@ -1257,11 +1259,5 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         default void setExpansion(float expansion) {}
 
         int getNumVisibleTiles();
-    }
-
-    public void updateSettings() {
-        if (mTileLayout != null) {
-            mTileLayout.updateSettings();
-        }
     }
 }

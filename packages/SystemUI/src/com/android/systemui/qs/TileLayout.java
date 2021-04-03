@@ -2,6 +2,7 @@ package com.android.systemui.qs;
 
 import static com.android.systemui.util.Utils.useQsMediaPlayer;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -31,15 +32,14 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
     protected int mCellMarginVertical;
     protected int mSidePadding;
     protected int mRows = 1;
-    protected int mDefaultColumns;
 
     protected final ArrayList<TileRecord> mRecords = new ArrayList<>();
     private int mCellMarginTop;
     protected boolean mListening;
-    protected int mMaxAllowedRows = 3;
+    //protected int mMaxAllowedRows = 3;
 
     // Prototyping with less rows
-    private final boolean mLessRows;
+    //private final boolean mLessRows;
     private int mMinRows = 1;
     private int mMaxColumns = NO_MAX_COLUMNS;
     private int mResourceColumns;
@@ -51,8 +51,8 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
     public TileLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFocusableInTouchMode(true);
-        mLessRows = (Settings.System.getInt(context.getContentResolver(), "qs_less_rows", 0) != 0)
-                || useQsMediaPlayer(context);
+        /*mLessRows = (Settings.System.getInt(context.getContentResolver(), "qs_less_rows", 0) != 0)
+                || useQsMediaPlayer(context);*/
         updateResources();
 
     }
@@ -114,20 +114,42 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
 
     public boolean updateResources() {
         final Resources res = mContext.getResources();
+        //mResourceColumns = Math.max(1, res.getInteger(R.integer.quick_settings_num_columns));
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        int rows;
+        if (res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mResourceColumns = Math.max(1, Settings.System.getIntForUser(resolver,
+                    Settings.System.QS_COLUMNS_PORTRAIT, 4,
+                    UserHandle.USER_CURRENT));
+            rows = Math.max(1, Settings.System.getIntForUser(resolver,
+                    Settings.System.QS_ROWS_PORTRAIT, 3,
+                    UserHandle.USER_CURRENT));
+        } else {
+            mResourceColumns = Math.max(1, Settings.System.getIntForUser(resolver,
+                    Settings.System.QS_COLUMNS_LANDSCAPE, 4,
+                    UserHandle.USER_CURRENT));
+            rows = Math.max(1, Settings.System.getIntForUser(resolver,
+                    Settings.System.QS_ROWS_LANDSCAPE, 1,
+                    UserHandle.USER_CURRENT));
+        }
         mCellHeight = mContext.getResources().getDimensionPixelSize(R.dimen.qs_tile_height);
         mCellMarginHorizontal = res.getDimensionPixelSize(R.dimen.qs_tile_margin_horizontal);
         mCellMarginVertical= res.getDimensionPixelSize(R.dimen.qs_tile_margin_vertical);
         mCellMarginTop = res.getDimensionPixelSize(R.dimen.qs_tile_margin_top);
-        mMaxAllowedRows = Math.max(1, getResources().getInteger(R.integer.quick_settings_max_rows));
-        if (mLessRows) mMaxAllowedRows = Math.max(mMinRows, mMaxAllowedRows - 1);
-        updateSettings();
+        /*mMaxAllowedRows = Math.max(1, getResources().getInteger(R.integer.quick_settings_max_rows));
+        if (mLessRows) mMaxAllowedRows = Math.max(mMinRows, mMaxAllowedRows - 1);*/
+        if (updateColumns() || mRows != rows) {
+            mRows = rows;
+            requestLayout();
+            return true;
+        }
         return false;
     }
 
     private boolean updateColumns() {
-        updateSettings();
         int oldColumns = mColumns;
-        mColumns = Math.min(mColumns, mMaxColumns);
+        mColumns = Math.min(mResourceColumns, mMaxColumns);
         return oldColumns != mColumns;
     }
 
@@ -165,7 +187,7 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
 
     /**
      * Determines the maximum number of rows that can be shown based on height. Clips at a minimum
-     * of 1 and a maximum of mMaxAllowedRows.
+     * of 1.
      *
      * @param allowedHeight The height this view has visually available
      * @param tilesCount Upper limit on the number of tiles to show. to prevent empty rows.
@@ -175,12 +197,12 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
                 // Add the cell margin in order to divide easily by the height + the margin below
                 + mCellMarginVertical;
         final int previousRows = mRows;
-        mRows = availableHeight / (mCellHeight + mCellMarginVertical);
+        /*mRows = availableHeight / (mCellHeight + mCellMarginVertical);*/
         if (mRows < mMinRows) {
             mRows = mMinRows;
-        } else if (mRows >= mMaxAllowedRows) {
+        }/* else if (mRows >= mMaxAllowedRows) {
             mRows = mMaxAllowedRows;
-        }
+        }*/
         if (mRows > (tilesCount + mColumns - 1) / mColumns) {
             mRows = (tilesCount + mColumns - 1) / mColumns;
         }
@@ -236,22 +258,5 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
     @Override
     public int getNumVisibleTiles() {
         return mRecords.size();
-    }
-
-    public void updateSettings() {
-        final Resources res = mContext.getResources();
-        mDefaultColumns = Math.max(1, res.getInteger(R.integer.quick_settings_num_columns));
-        boolean isPortrait = res.getConfiguration().orientation
-                == Configuration.ORIENTATION_PORTRAIT;
-        int columns = Settings.System.getIntForUser(
-                mContext.getContentResolver(), Settings.System.OMNI_QS_LAYOUT_COLUMNS, mDefaultColumns,
-                UserHandle.USER_CURRENT);
-        int columnsLandscape = Settings.System.getIntForUser(
-                mContext.getContentResolver(), Settings.System.OMNI_QS_LAYOUT_COLUMNS_LANDSCAPE, mDefaultColumns,
-                UserHandle.USER_CURRENT);
-        if (mColumns != (isPortrait ? columns : columnsLandscape)) {
-            mColumns = isPortrait ? columns : columnsLandscape;
-            requestLayout();
-        }
     }
 }

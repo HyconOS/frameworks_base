@@ -12,6 +12,9 @@
     <!-- In-display Fingerprint -->
     <java-symbol type="bool" name="config_supportsInDisplayFingerprint" />
 
+    <!-- Whether device supports in-display fingerprint when screen is turned off -->
+    <java-symbol type="bool" name="config_supportsScreenOffInDisplayFingerprint" />
+
     <!-- Vendor signatures -->
     <java-symbol type="array" name="config_vendorPlatformSignatures" />
 
@@ -134,4 +137,6 @@
     <!-- DC Dimming -->
     <java-symbol type="string" name="config_deviceDcDimmingSysfsNode" />
 
+    <!-- Default fod pressed icon -->
+    <java-symbol type="integer" name="config_fod_pressed_color" />
 </resources>

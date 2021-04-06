@@ -4698,6 +4698,18 @@ public final class Settings {
         public static final String NOTIFICATION_LIGHT_PULSE = "notification_light_pulse";
 
         /**
+         * FOD recognizing animation
+         * @hide
+         */
+        public static final String FOD_RECOGNIZING_ANIMATION = "fod_recognizing_animation";
+
+        /**
+         * FOD recognizing animation picker
+         * @hide
+         */
+        public static final String FOD_ANIM = "fod_recognizing_animation_list";
+
+        /**
          * Show pointer location on screen?
          * 0 = no
          * 1 = yes
@@ -5052,6 +5064,12 @@ public final class Settings {
          * @hide
          */
         public static final String QS_COLUMNS_LANDSCAPE = "qs_columns_landscape";
+
+        /**
+         * Screen off fod
+         * @hide
+         */
+        public static final String FOD_GESTURE = "fod_gesture";
 
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
@@ -5415,6 +5433,18 @@ public final class Settings {
          * @hide
          */
         public static final String ALERT_SLIDER_NOTIFICATIONS = "alert_slider_notifications";
+        
+        /**
+         * FOD icon picker
+         * @hide
+         */
+        public static final String FOD_ICON = "fod_icon";
+
+        /**
+         * FOD pressed color
+         * @hide
+         */
+        public static final String FOD_COLOR = "fod_color";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
@@ -5576,6 +5606,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_TILE_STYLE);
             PRIVATE_SETTINGS.add(SYSTEMUI_PLUGIN_VOLUME);
             PRIVATE_SETTINGS.add(QS_TILES_BG_DISCO);
+            PRIVATE_SETTINGS.add(FOD_GESTURE);
         }
 
         /**

@@ -17,6 +17,7 @@
 package com.android.internal.util.custom;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -280,5 +281,13 @@ public class CustomUtils {
         SensorManager sm = (SensorManager) ctx.getSystemService(Context.SENSOR_SERVICE);
         return sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
                 && sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null;
+    }
+
+    public static boolean isBlurSupported() {
+        boolean blurSupportedSysProp = SystemProperties
+            .getBoolean("ro.surface_flinger.supports_background_blur", false);
+        boolean blurDisabledSysProp = SystemProperties
+            .getBoolean("persist.sys.sf.disable_blurs", false);
+        return blurSupportedSysProp && !blurDisabledSysProp && ActivityManager.isHighEndGfx();
     }
 }

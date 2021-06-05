@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2019 The Android Open Source Project
  * Copyright (C) 2020 ProjectFluid
- * Copyright (C) 2021 NezukoOS 
+ * Copyright (C) 2021 NezukoOS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,14 +183,12 @@ public class Fluidv2ClockController implements ClockPlugin {
         mYear.setTextColor(color);
     }
 
-    @Override
     public void setTypeface(Typeface tf) {
         mTimeClock.setTypeface(tf);
         mDay.setTypeface(tf);
         mYear.setTypeface(tf);
     }
 
-    @Override
     public void setDateTypeface(Typeface tf) {
     }
 

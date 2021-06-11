@@ -119,6 +119,8 @@ public class KeyguardIndicationController implements StateListener,
     private boolean mPowerPluggedIn;
     private boolean mPowerPluggedInWired;
     private boolean mPowerCharged;
+    private boolean mBatteryOverheated;
+    private boolean mEnableBatteryDefender;
     private int mChargingSpeed;
     private double mChargingWattage;
     private int mBatteryLevel;
@@ -396,35 +398,19 @@ public class KeyguardIndicationController implements StateListener,
             mWakeLock.setAcquired(false);
         }
 
-        if (mVisible) {
-            // Walk down a precedence-ordered list of what indication
-            // should be shown based on user or device state
-            if (mDozing) {
-                // When dozing we ignore any text color and use white instead, because
-                // colors can be hard to read in low brightness.
-                mTextView.setTextColor(Color.WHITE);
-                if (!TextUtils.isEmpty(mTransientIndication)) {
-                    mTextView.switchIndication(mTransientIndication);
-                } else if (!TextUtils.isEmpty(mAlignmentIndication)) {
-                    mTextView.switchIndication(mAlignmentIndication);
-                    mTextView.setTextColor(mContext.getColor(R.color.misalignment_text_color));
-                } else if (mPowerPluggedIn) {
-                    String indication = computePowerIndication();
-                    if (animate) {
-                        animateText(mTextView, indication);
-                    } else {
-                        mTextView.switchIndication(indication);
-                    }
-                } else {
-                    String percentage = NumberFormat.getPercentInstance()
-                            .format(mBatteryLevel / 100f);
-                    mTextView.switchIndication(percentage);
-                }
-                return;
-            }
+        if (!mVisible) {
+            return;
+        }
 
-        // A few places might need to hide the indication, so always start by making it visible
+         // A few places might need to hide the indication, so always start by making it visible
         mIndicationArea.setVisibility(View.VISIBLE);
+
+        // Walk down a precedence-ordered list of what indication
+        // should be shown based on user or device state
+        if (mDozing) {
+            int userId = KeyguardUpdateMonitor.getCurrentUser();
+            String trustGrantedIndication = getTrustGrantedIndication();
+            String trustManagedIndication = getTrustManagedIndication();
 
             String powerIndication = null;
             if (mPowerPluggedIn) {
@@ -432,7 +418,15 @@ public class KeyguardIndicationController implements StateListener,
             }
 
             boolean isError = false;
-            if (!mKeyguardUpdateMonitor.isUserUnlocked(userId)) {
+            // When dozing we ignore any text color and use white instead, because
+            // colors can be hard to read in low brightness.
+            mTextView.setTextColor(Color.WHITE);
+            if (!TextUtils.isEmpty(mTransientIndication)) {
+                mTextView.switchIndication(mTransientIndication);
+            } else if (!mBatteryPresent) {
+                // If there is no battery detected, hide the indication and bail
+                mIndicationArea.setVisibility(View.GONE);
+            } else if (!mKeyguardUpdateMonitor.isUserUnlocked(userId)) {
                 mTextView.switchIndication(com.android.internal.R.string.lockscreen_storage_locked);
             } else if (!TextUtils.isEmpty(mTransientIndication)) {
                 mTextView.switchIndication(mTransientIndication);
@@ -449,11 +443,9 @@ public class KeyguardIndicationController implements StateListener,
                 }
             } else if (!TextUtils.isEmpty(mAlignmentIndication)) {
                 mTextView.switchIndication(mAlignmentIndication);
-                isError = true;
+                mTextView.setTextColor(mContext.getColor(R.color.misalignment_text_color));
             } else if (mPowerPluggedIn) {
-                if (DEBUG_CHARGING_SPEED) {
-                    powerIndication += ",  " + (mChargingWattage / 1000) + " mW";
-                }
+                String indication = computePowerIndication();
                 if (animate) {
                     animateText(mTextView, indication);
                 } else {

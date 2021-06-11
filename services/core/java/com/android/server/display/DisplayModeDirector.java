@@ -48,6 +48,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.os.BackgroundThread;
 import com.android.server.display.utils.AmbientFilter;
 import com.android.server.display.utils.AmbientFilterFactory;
+import com.android.server.wm.utils.DeviceConfigInterface;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -80,8 +81,9 @@ public class DisplayModeDirector {
 
     private final Object mLock = new Object();
     private final Context mContext;
-
+    private final Injector mInjector;
     private final DisplayModeDirectorHandler mHandler;
+    private final DeviceConfigInterface mDeviceConfig;
 
     // A map from the display ID to the collection of votes and their priority. The latter takes
     // the form of another map from the priority to the vote itself so that each priority is
@@ -101,8 +103,14 @@ public class DisplayModeDirector {
     private DesiredDisplayModeSpecsListener mDesiredDisplayModeSpecsListener;
 
     public DisplayModeDirector(@NonNull Context context, @NonNull Handler handler) {
+        this(context, handler, new RealInjector());
+    }
+
+    public DisplayModeDirector(@NonNull Context context, @NonNull Handler handler,
+            @NonNull Injector injector) {
         mContext = context;
         mHandler = new DisplayModeDirectorHandler(handler.getLooper());
+        mInjector = injector;
         mVotesByDisplay = new SparseArray<>();
         mSupportedModesByDisplay = new SparseArray<>();
         mDefaultModeByDisplay =  new SparseArray<>();
@@ -111,6 +119,7 @@ public class DisplayModeDirector {
         mDisplayObserver = new DisplayObserver(context, handler);
         mBrightnessObserver = new BrightnessObserver(context, handler);
         mDeviceConfigDisplaySettings = new DeviceConfigDisplaySettings();
+        mDeviceConfig = injector.getDeviceConfig();
     }
 
     /**
@@ -701,6 +710,12 @@ public class DisplayModeDirector {
         // It's used to avoid rate switch in certain conditions.
         public static final int PRIORITY_LOW_BRIGHTNESS = 1;
 
+        // FLICKER votes for a single refresh rate like [60,60], [90,90] or null.
+        // If the higher voters result is a range, it will fix the rate to a single choice.
+        // It's used to avoid refresh rate switches in certain conditions which may result in the
+        // user seeing the display flickering when the switches occur.
+        public static final int PRIORITY_FLICKER = 1;
+
         // SETTING_MIN_REFRESH_RATE is used to propose a lower bound of display refresh rate.
         // It votes [MIN_REFRESH_RATE, Float.POSITIVE_INFINITY]
         public static final int PRIORITY_USER_SETTING_MIN_REFRESH_RATE = 2;
@@ -772,8 +787,8 @@ public class DisplayModeDirector {
             switch (priority) {
                 case PRIORITY_DEFAULT_REFRESH_RATE:
                     return "PRIORITY_DEFAULT_REFRESH_RATE";
-                case PRIORITY_LOW_BRIGHTNESS:
-                    return "PRIORITY_LOW_BRIGHTNESS";
+                case PRIORITY_FLICKER:
+                    return "PRIORITY_FLICKER";
                 case PRIORITY_USER_SETTING_MIN_REFRESH_RATE:
                     return "PRIORITY_USER_SETTING_MIN_REFRESH_RATE";
                 case PRIORITY_APP_REQUEST_REFRESH_RATE:
@@ -1096,6 +1111,8 @@ public class DisplayModeDirector {
         private int[] mDisplayBrightnessThresholds;
         private int[] mAmbientBrightnessThresholds;
         // valid threshold if any item from the array >= 0
+        private boolean mShouldObserveDisplayChange;
+        private boolean mShouldObserveAmbientChange;
         private boolean mShouldObserveDisplayLowChange;
         private boolean mShouldObserveAmbientLowChange;
         private boolean mShouldObserveDisplayHighChange;
@@ -1108,12 +1125,14 @@ public class DisplayModeDirector {
         // Take it as low brightness before valid sensor data comes
         private float mAmbientLux = -1.0f;
         private AmbientFilter mAmbientFilter;
+        private int mBrightness = -1;
 
         private final Context mContext;
 
         // Enable light sensor only when mShouldObserveAmbientChange is true, screen is on, peak
         // refresh rate changeable and low power mode off. After initialization, these states will
         // be updated from the same handler thread.
+        private boolean mScreenOn = false;
         private int mDefaultDisplayState = Display.STATE_UNKNOWN;
         private boolean mRefreshRateChangeable = false;
         private boolean mLowPowerModeEnabled = false;
@@ -1205,25 +1224,16 @@ public class DisplayModeDirector {
         public void dumpLocked(PrintWriter pw) {
             pw.println("  BrightnessObserver");
             pw.println("    mAmbientLux: " + mAmbientLux);
+            pw.println("    mRefreshRateInZone: " + mRefreshRateInZone);
             pw.println("    mBrightness: " + mBrightness);
             pw.println("    mDefaultDisplayState: " + mDefaultDisplayState);
             pw.println("    mLowPowerModeEnabled: " + mLowPowerModeEnabled);
             pw.println("    mRefreshRateChangeable: " + mRefreshRateChangeable);
             pw.println("    mShouldObserveDisplayLowChange: " + mShouldObserveDisplayLowChange);
             pw.println("    mShouldObserveAmbientLowChange: " + mShouldObserveAmbientLowChange);
-            pw.println("    mRefreshRateInLowZone: " + mRefreshRateInLowZone);
-
-            for (int d : mLowDisplayBrightnessThresholds) {
-                pw.println("    mDisplayLowBrightnessThreshold: " + d);
-            }
-
-            for (int d : mLowAmbientBrightnessThresholds) {
-                pw.println("    mAmbientLowBrightnessThreshold: " + d);
-            }
 
             pw.println("    mShouldObserveDisplayHighChange: " + mShouldObserveDisplayHighChange);
             pw.println("    mShouldObserveAmbientHighChange: " + mShouldObserveAmbientHighChange);
-            pw.println("    mRefreshRateInHighZone: " + mRefreshRateInHighZone);
 
             for (int d: mDisplayBrightnessThresholds) {
                 pw.println("    mDisplayBrightnessThreshold: " + d);
@@ -1364,16 +1374,6 @@ public class DisplayModeDirector {
             updateVoteLocked(Vote.PRIORITY_FLICKER, vote);
         }
 
-        private boolean hasValidLowZone() {
-            return mRefreshRateInLowZone > 0
-                    && (mShouldObserveDisplayLowChange || mShouldObserveAmbientLowChange);
-        }
-
-        private boolean hasValidHighZone() {
-            return mRefreshRateInHighZone > 0
-                    && (mShouldObserveDisplayHighChange || mShouldObserveAmbientHighChange);
-        }
-
         private void updateDefaultDisplayState() {
             Display display = mContext.getSystemService(DisplayManager.class)
                     .getDisplay(Display.DEFAULT_DISPLAY);
@@ -1382,6 +1382,12 @@ public class DisplayModeDirector {
             }
 
             setDefaultDisplayState(display.getState());
+        }
+
+        private void onScreenOn(boolean on) {
+            if (mScreenOn != on) {
+                mScreenOn = on;
+            }
         }
 
         @VisibleForTesting

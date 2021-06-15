@@ -186,7 +186,7 @@ public abstract class AuthBiometricView extends LinearLayout {
     private TextView mDescriptionView;
     protected ImageView mIconView;
     protected ImageView mAppIcon;
-    protected TextView mIndicatorView;
+    @VisibleForTesting protected TextView mIndicatorView;
     @VisibleForTesting Button mNegativeButton;
     @VisibleForTesting Button mPositiveButton;
     @VisibleForTesting Button mTryAgainButton;

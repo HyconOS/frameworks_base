@@ -296,14 +296,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
                 mLockScreenBlur =
                     (float) TunerService.parseInteger(newValue, 0) / 100f;
                 break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        switch (key) {
             case LOCKSCREEN_LOCK_ICON:
                 mLockIcon =
                     TunerService.parseIntegerSwitch(newValue, true);
@@ -312,9 +304,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
                 break;
         }
     }
-
-
-
 
     @Override
     public void onPanelExpansionChanged(float expansion, boolean tracking) {

@@ -5575,6 +5575,11 @@ public final class Settings {
          */
         public static final String AMBIENT_LIGHT_PULSE_FOR_ALL = "ambient_light_pulse_for_all";
 
+	/**
+         * @hide
+        */
+        public static final String EDGE_MUSIC_CONTROL = "edge_music_control";
+
         /**
          * Use doubletap as doze pulse triggers
          * @hide
@@ -5876,6 +5881,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(HEADER_ICONS_STYLE);
             PRIVATE_SETTINGS.add(STATUSBAR_ICONS_STYLE);
             PRIVATE_SETTINGS.add(FOD_GESTURE);
+            PRIVATE_SETTINGS.add(EDGE_MUSIC_CONTROL);
         }
 
         /**

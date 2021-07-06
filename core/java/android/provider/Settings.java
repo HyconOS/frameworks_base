@@ -5320,13 +5320,7 @@ public final class Settings {
          * @hide
          */
         public static final String NOTIFICATION_HEADERS = "notification_headers";
-
-	/**
-         * Show data usage in QS header
-         * @hide
-         */
-        public static final String QS_DATAUSAGE = "qs_datausage";
-
+	
         /**
          * Setting to hold the current set overlay for color bucket.
          * overlay package name (String)

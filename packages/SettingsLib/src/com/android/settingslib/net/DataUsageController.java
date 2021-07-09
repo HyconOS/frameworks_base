@@ -296,7 +296,7 @@ public class DataUsageController {
     public interface Callback {
         void onMobileDataEnabled(boolean enabled);
     }
-
+    
     public DataUsageInfo getDailyDataUsageInfo() {
         NetworkTemplate template = DataUsageUtils.getMobileTemplate(mContext, mSubscriptionId);
         return getDailyDataUsageInfo(template);

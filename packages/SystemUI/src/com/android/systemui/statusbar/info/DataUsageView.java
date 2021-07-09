@@ -1,27 +1,21 @@
 package com.android.systemui.statusbar.info;
 
-
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Typeface;
-import android.util.AttributeSet;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.provider.Settings;
 import android.telephony.SubscriptionManager;
 import android.text.BidiFormatter;
 import android.text.format.Formatter;
 import android.text.format.Formatter.BytesResult;
+import android.util.AttributeSet;
 import android.widget.TextView;
-import android.provider.Settings;
-import android.view.View;
 
 import com.android.internal.util.custom.CustomUtils;
+import com.android.settingslib.net.DataUsageController;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
+import com.android.systemui.statusbar.phone.StatusBar;
 import com.android.systemui.statusbar.policy.NetworkController;
-import com.android.systemui.statusbar.policy.NetworkController.SignalCallback;
-import com.android.settingslib.net.DataUsageController;
 
 public class DataUsageView extends TextView {
 
@@ -29,15 +23,12 @@ public class DataUsageView extends TextView {
     private NetworkController mNetworkController;
     private static boolean shouldUpdateData;
     private String formatedinfo;
-    private Handler mHandler;
-    private static long mTime;
 
     public DataUsageView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mContext = context;
         mNetworkController = Dependency.get(NetworkController.class);
-        mHandler = new Handler();
     }
 
     protected void onDraw(Canvas canvas) {
@@ -45,30 +36,12 @@ public class DataUsageView extends TextView {
 
         if ((isDataUsageEnabled() == 0) && this.getText().toString() != "") {
             setText("");
+        } else if (isDataUsageEnabled() != 0 && shouldUpdateData) {
+            shouldUpdateData = false;
+            updateUsageData();
+            setText(formatedinfo);
         }
-        if (isDataUsageEnabled() != 0) {
-            if(shouldUpdateData) {
-                shouldUpdateData = false;
-                updateDataUsage();
-            } else {
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateDataUsage();
-                    }
-                }, 2000);
-            }
-        }
-    }
-
-    private void updateDataUsage() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                updateUsageData();
-            }
-        });
-        setText(formatedinfo);
+        updateDataUsageImage();
     }
 
     private void updateUsageData() {
@@ -82,7 +55,8 @@ public class DataUsageView extends TextView {
                 : (CustomUtils.isWiFiConnected(mContext) ?
                         mobileDataController.getWifiDataUsageInfo()
                         : mobileDataController.getDataUsageInfo());
-        formatedinfo = formatDataUsage(info.usageLevel) + " ";
+
+        formatedinfo = formatDataUsage(info.usageLevel);
     }
 
     public int isDataUsageEnabled() {
@@ -91,18 +65,17 @@ public class DataUsageView extends TextView {
     }
 
     public static void updateUsage() {
-        // limit to one update per second
-        long time = System.currentTimeMillis();
-        if (time - mTime > 1000) {
-            shouldUpdateData = true;
-        }
-        mTime = time;
+        shouldUpdateData = true;
     }
 
-    private CharSequence formatDataUsage(long byteValue) {
+    private void updateDataUsageImage() {
+        StatusBar statusBar = Dependency.get(StatusBar.class);
+        statusBar.updateDataUsageImage();
+    }
+
+    private String formatDataUsage(long byteValue) {
         final BytesResult res = Formatter.formatBytes(mContext.getResources(), byteValue,
                 Formatter.FLAG_IEC_UNITS);
-        return BidiFormatter.getInstance().unicodeWrap(mContext.getString(
-                com.android.internal.R.string.fileSizeSuffix, res.value, res.units));
+        return BidiFormatter.getInstance().unicodeWrap(res.value + res.units);
     }
 }

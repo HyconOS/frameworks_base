@@ -191,7 +191,6 @@ import com.android.systemui.pulse.VisualizerView;
 import com.android.systemui.qs.QSFragment;
 import com.android.systemui.qs.QSPanel;
 import com.android.systemui.qs.QuickStatusBarHeader;
-import com.android.systemui.statusbar.info.DataUsageView;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.ScreenPinningRequest;
 import com.android.systemui.shared.plugins.PluginManager;
@@ -450,6 +449,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     // settings
     private QSPanel mQSPanel;
+    private QuickStatusBarHeader mQuickStatusBarHeader;
 
     KeyguardIndicationController mKeyguardIndicationController;
 
@@ -2189,6 +2189,10 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_BLACKLIST_VALUES),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_DATAUSAGE),
+                    false, this, UserHandle.USER_ALL);        
+
         }
 
         @Override
@@ -4402,10 +4406,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             mNotificationInterruptStateProvider.setHeadsUpBlacklist();
     }
 
-    public void updateQSDataUsageInfo() {
-        DataUsageView.updateUsage();
-    }
-
     public int getWakefulnessState() {
         return mWakefulnessLifecycle.getWakefulness();
     }
@@ -5026,5 +5026,11 @@ public class StatusBar extends SystemUI implements DemoMode,
                   currentActivity.getShortClassName().trim();
         }
         return null;
+    }
+    
+    public void updateDataUsageImage() {
+        if (mQuickStatusBarHeader != null) {
+            mQuickStatusBarHeader.updateDataUsageImage();
+        }
     }
 }

@@ -65,6 +65,7 @@ LOCAL_REQUIRED_MODULES := \
         SliderStyleOOS \
         SliderStyleAosp \
         SliderStyleRUI \
+        SliderStyleA12 \
 	NavigationBarMode2ButtonOverlay \
 	NavigationBarMode3ButtonOverlay \
 	NavigationBarModeGesturalOverlay \

@@ -45,6 +45,7 @@ public class DescendantSeamlessClockSwitch {
         "com.android.keyguard.clock.ShapeShiftClockController",
         "com.android.keyguard.clock.OctaviDigitalClockController",
         "com.android.keyguard.clock.Fluidv2ClockController",
+        "com.android.keyguard.clock.AndroidTwelveClockController",
         "com.android.keyguard.clock.AndroidSClockController",
         "com.android.keyguard.clock.AndroidSDP3ClockController"
     };

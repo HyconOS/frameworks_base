@@ -501,7 +501,7 @@ public class KeyguardSliceProvider extends SliceProvider implements
         mMediaIsVisible = nextVisible;
 
         // Set new track info from playing media notification
-        if (isShapeShiftTwelveClockSelected) {
+        if (isShapeShiftTwelveClockSelected && title != null) {
             StringBuffer evenSB = new StringBuffer(" ");
             evenSB.append(title);
             mMediaTitle = evenSB;

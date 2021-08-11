@@ -227,6 +227,7 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.QS_PANEL_BG_USE_NEW_TINT, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.ACCENT_COLOR, ANY_INTEGER_VALIDATOR);
         VALIDATORS.put(System.BUTTON_BACKLIGHT_ONLY_WHEN_PRESSED, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.AMBIENT_SWIPE, BOOLEAN_VALIDATOR);
         VALIDATORS.put(
                 System.COLOR_BUCKET_OVERLAY,
                 new Validator() {

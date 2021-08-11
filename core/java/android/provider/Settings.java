@@ -5318,7 +5318,13 @@ public final class Settings {
          * @hide
          */
         public static final String NOTIFICATION_HEADERS = "notification_headers";
-	
+
+        /**
+         * Enable\Disable swipe up or down gesture on ambient display like OOS
+         * @hide
+         */
+        public static final String AMBIENT_SWIPE = "ambient_swipe";
+
         /**
          * Setting to hold the current set overlay for color bucket.
          * overlay package name (String)
@@ -5878,6 +5884,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(VOLUME_ROCKER_WAKE);
             PRIVATE_SETTINGS.add(VOLUME_BUTTON_MUSIC_CONTROL);
             PRIVATE_SETTINGS.add(USE_OLD_MOBILETYPE);
+            PRIVATE_SETTINGS.add(AMBIENT_SWIPE);
             PRIVATE_SETTINGS.add(VIBRATE_ON_CONNECT);
             PRIVATE_SETTINGS.add(VIBRATE_ON_CALLWAITING);
             PRIVATE_SETTINGS.add(VIBRATE_ON_DISCONNECT);

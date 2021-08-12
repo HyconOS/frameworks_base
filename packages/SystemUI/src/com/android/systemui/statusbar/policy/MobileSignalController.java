@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.graphics.drawable.Drawable;
 import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Handler;
@@ -107,16 +106,6 @@ public class MobileSignalController extends SignalController<
     private boolean mDataDisabledIcon;
     private boolean mRoamingIconAllowed;
 
-    // Volte Icon
-    private boolean mVoLTEicon;
-    // Volte Icon Style
-    private int mVoLTEstyle;
-
-    // VoWiFi Icon
-    private int mVoWiFiIcon;
-    // VoWiFi Icon Style
-    private int mVoWiFistyle;
-
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
     public MobileSignalController(Context context, Config config, boolean hasMobileData,
@@ -198,18 +187,6 @@ public class MobileSignalController extends SignalController<
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.ROAMING_INDICATOR_ICON), false,
                     this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.SHOW_VOLTE_ICON), false,
-                    this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.VOLTE_ICON_STYLE), false,
-                    this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.VOWIFI_ICON), false,
-                    this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.VOWIFI_ICON_STYLE), false,
-                    this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -237,25 +214,8 @@ public class MobileSignalController extends SignalController<
                 Settings.System.ROAMING_INDICATOR_ICON, 1,
                 UserHandle.USER_CURRENT) == 1;
 
-        mVoLTEicon = Settings.System.getIntForUser(resolver,
-                Settings.System.SHOW_VOLTE_ICON, 0,
-                UserHandle.USER_CURRENT) == 1;
-
-        mVoLTEstyle = Settings.System.getIntForUser(resolver,
-                Settings.System.VOLTE_ICON_STYLE, 0,
-                UserHandle.USER_CURRENT);
-
-        mVoWiFiIcon = Settings.System.getIntForUser(resolver,
-                Settings.System.VOWIFI_ICON, 0,
-                UserHandle.USER_CURRENT);
-
-        mVoWiFistyle = Settings.System.getIntForUser(resolver,
-                Settings.System.VOWIFI_ICON_STYLE, 0,
-                UserHandle.USER_CURRENT);
-
         mapIconSets();
         updateTelephony();
-        notifyListeners();
     }
 
     public void setConfiguration(Config config) {
@@ -504,46 +464,9 @@ public class MobileSignalController extends SignalController<
     private int getVolteResId() {
         int resId = 0;
 
-        if (mVoWiFiIcon == 2 && isVowifiAvailable()) {
-            return resId;
-        }
-
-        if (mCurrentState.imsRegistered && (mCurrentState.voiceCapable ||
-                  mCurrentState.videoCapable) && mVoLTEicon) {
-            switch(mVoLTEstyle) {
-                // VoLTE
-                case 1:
-                    resId = R.drawable.ic_volte1;
-                    break;
-                // OOS VoLTE
-                case 2:
-                    resId = R.drawable.ic_volte2;
-                    break;
-                // HD Icon
-                case 3:
-                    resId = R.drawable.ic_hd_volte;
-                    break;
-                // ASUS VoLTE
-                case 4:
-                    resId = R.drawable.ic_volte3;
-                    break;
-                // CAF HD Icon
-                case 5:
-                    resId = R.drawable.ic_hd2_volte;
-                    break;
-                // MIUI 11 VoLTE icon
-                case 6:
-                    resId = R.drawable.ic_volte_miui;
-                    break;
-                // EMUI icon
-                case 7:
-                    resId = R.drawable.ic_volte_emui;
-                    break;
-                case 0:
-                default:
-                    resId = R.drawable.ic_volte;
-                    break;
-            }
+        if ( (mCurrentState.voiceCapable || mCurrentState.videoCapable)
+                &&  mCurrentState.imsRegistered ) {
+            resId = R.drawable.ic_volte;
         }
         return resId;
     }
@@ -640,10 +563,10 @@ public class MobileSignalController extends SignalController<
                 && mCurrentState.activityOut;
         showDataIcon &= mCurrentState.isDefault || dataDisabled;
         int typeIcon = (showDataIcon || mConfig.alwaysShowDataRatIcon) ? icons.mDataType : 0;
-        int volteIcon = isVolteSwitchOn() ? getVolteResId() : 0;
+        int volteIcon = mConfig.showVolteIcon && isVolteSwitchOn() ? getVolteResId() : 0;
 
         MobileIconGroup vowifiIconGroup = getVowifiIconGroup();
-        if ( vowifiIconGroup != null && (mVoWiFiIcon >= 1) ) {
+        if (mConfig.showVowifiIcon && vowifiIconGroup != null) {
             typeIcon = vowifiIconGroup.mDataType;
             statusIcon = new IconState(true,
                     mCurrentState.enabled && !mCurrentState.airplaneMode? statusIcon.icon : 0,
@@ -877,32 +800,8 @@ public class MobileSignalController extends SignalController<
         if ( isVowifiAvailable() && !isCallIdle() ) {
             return TelephonyIcons.VOWIFI_CALLING;
         } else if (isVowifiAvailable()) {
-            switch(mVoWiFistyle) {
-                // OOS
-                case 1:
-                    return TelephonyIcons.VOWIFI_ONEPLUS;
-                // Motorola
-                case 2:
-                    return TelephonyIcons.VOWIFI_MOTO;
-                // ASUS
-                case 3:
-                    return TelephonyIcons.VOWIFI_ASUS;
-                // EMUI (Huawei P10)
-                case 4:
-                    return TelephonyIcons.VOWIFI_EMUI;
-                // Simple1
-                case 5:
-                    return TelephonyIcons.VOWIFI_Simple1;
-                // Simple2
-                case 6:
-                    return TelephonyIcons.VOWIFI_Simple2;
-                // Simple3
-                case 7:
-                    return TelephonyIcons.VOWIFI_Simple3;
-                default:
-                    return TelephonyIcons.VOWIFI;
-            }
-        }else {
+            return TelephonyIcons.VOWIFI;
+        } else {
             return null;
         }
     }
@@ -1037,7 +936,9 @@ public class MobileSignalController extends SignalController<
     private final BroadcastReceiver mVolteSwitchObserver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Log.d(mTag, "action=" + intent.getAction());
-            notifyListeners();
+            if ( mConfig.showVolteIcon ) {
+                notifyListeners();
+            }
         }
     };
 

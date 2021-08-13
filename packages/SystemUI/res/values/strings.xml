@@ -2889,4 +2889,8 @@
     <!-- Text to display in a notification when ACTION_BATTERY_CHANGED.EXTRA_PRESENT field is false
     [CHAR LIMIT=NONE] -->
     <string name="battery_state_unknown_notification_text">Tap for more information</string>
+
+    <!-- Reboot/Recovery QS tile -->
+    <string name="quick_settings_reboot_label">Reboot</string>
+    <string name="quick_settings_reboot_recovery_label">Recovery</string>
 </resources>

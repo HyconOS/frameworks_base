@@ -3376,8 +3376,9 @@ public class NotificationPanelViewController extends PanelViewController {
                 }
 
                 if (mIsLockscreenDoubleTapEnabled
-                        && mBarState == StatusBarState.KEYGUARD) {
-                   mLockscreenDoubleTapToSleep.onTouchEvent(event);
+                        && mBarState == StatusBarState.KEYGUARD
+                        && !mPulsing) {
+                    mLockscreenDoubleTapToSleep.onTouchEvent(event);
                 }
 
                 // Make sure the next touch won't the blocked after the current ends.

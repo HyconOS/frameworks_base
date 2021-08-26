@@ -194,7 +194,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
                         PowerManager.WAKE_REASON_GESTURE, FODCircleView.class.getSimpleName()));
                 }
                 mPressPending = true;
-            } else {
+            } else if (mScreenTurnedOn) {
                 mHandler.post(() -> showCircle());
             }
         }

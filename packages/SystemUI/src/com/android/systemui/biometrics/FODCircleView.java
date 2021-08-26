@@ -113,6 +113,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
     private boolean mFodGestureEnable;
     private boolean mPressPending;
     private boolean mScreenTurnedOn;
+    private boolean mDimlayerSOF;
 
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
@@ -486,6 +487,8 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
             com.android.internal.R.bool.config_supportsScreenOffInDisplayFingerprint)){
             mFodGestureSettingsObserver = new FodGestureSettingsObserver(context, mHandler);
             mFodGestureSettingsObserver.registerListener();
+            mDimlayerSOF = context.getResources().getBoolean(
+                    com.android.internal.R.bool.config_disableCallingDimlayerInOnShowWithScreenOffFOD);
         }
 
         updateCutoutFlags();
@@ -592,6 +595,9 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         if (mFading) return;
         IFingerprintInscreen daemon = getFingerprintInScreenDaemon();
         try {
+            if (mDimlayerSOF && mFodGestureEnable) {
+                daemon.onShowFODView();
+            }
             daemon.onPress();
         } catch (RemoteException e) {
             // do nothing
@@ -602,6 +608,9 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         IFingerprintInscreen daemon = getFingerprintInScreenDaemon();
         try {
             daemon.onRelease();
+            if (mDimlayerSOF && mFodGestureEnable) {
+                daemon.onHideFODView();
+            }
         } catch (RemoteException e) {
             // do nothing
         }
@@ -610,7 +619,11 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
     public void dispatchShow() {
         IFingerprintInscreen daemon = getFingerprintInScreenDaemon();
         try {
-            daemon.onShowFODView();
+            if (!mDimlayerSOF) {
+                daemon.onShowFODView();
+            } else if (!mFodGestureEnable) {
+                daemon.onShowFODView();
+            }
         } catch (RemoteException e) {
             // do nothing
         }

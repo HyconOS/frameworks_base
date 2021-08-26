@@ -202,9 +202,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         @Override
         public void onFingerUp() {
             mHandler.post(() -> hideCircle());
-            if (mFodGestureEnable && mPressPending) {
-                mPressPending = false;
-            }
+            mPressPending = false;
         }
     };
 

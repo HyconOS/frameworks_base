@@ -234,7 +234,4 @@
 
     <!-- Whether device supports in-display fingerprint when screen is turned off -->
     <bool name="config_supportsScreenOffInDisplayFingerprint">false</bool>
-
-    <!-- Whether to call dimlayer during onPress while screen off FOD is turned on -->
-    <bool name="config_disableCallingDimlayerInOnShowWithScreenOffFOD">false</bool>
 </resources>

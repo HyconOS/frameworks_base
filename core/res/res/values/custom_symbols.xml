@@ -147,9 +147,6 @@
     <!-- Whether device supports in-display fingerprint when screen is turned off -->
     <java-symbol type="bool" name="config_supportsScreenOffInDisplayFingerprint" />
 
-    <!-- Whether to call dimlayer during onPress while screen off FOD is turned on -->
-    <java-symbol type="bool" name="config_disableCallingDimlayerInOnShowWithScreenOffFOD" />
-
     <!-- Clipboard access toast -->
     <java-symbol type="string" name="app_clipboard_access_denied" />
     <java-symbol type="string" name="app_clipboard_access_granted" />
